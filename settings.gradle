@@ -1,7 +1,0 @@
-rootProject.name = 'bms-application'
-include 'bms-customer-service'
-include 'bms-booking-service'
-include 'bms-account-service'
-include 'bms-ticket-service'
-include 'bms-document-service'
-include 'bms-bus-service'

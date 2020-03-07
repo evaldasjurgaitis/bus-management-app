@@ -1,8 +1,0 @@
-plugins {
-    id 'java'
-}
-
-group 'ej'
-version '1.0-SNAPSHOT'
-
-sourceCompatibility = 11

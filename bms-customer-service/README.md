@@ -1,2 +1,2 @@
-# bms-application
-Bus management application
+# BMS-application
+Customer service

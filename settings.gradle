@@ -1,3 +1,4 @@
 rootProject.name = 'bms-application'
 include 'bms-customer-service'
 include 'bms-booking-service'
+include 'bms-account-service'

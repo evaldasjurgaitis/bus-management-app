@@ -1,0 +1,30 @@
+
+server:
+  port: 8081
+spring:
+  application:
+    name: bms-customer-service
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:postgresql://localhost:5432/customer
+    username: admin
+    password: admin
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      idle-timeout: 30000
+      pool-name: CustomerPool
+      max-lifetime: 2000000
+      connection-timeout: 300000
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+management:
+  endpoints.web.exposure.include: "*"
+  endpoint.health.show-details: ALWAYS
+
+logging:
+  level:
+    org.hibernate.engine.jdbc.env.internal.LobCreatorBuilderImpl: WARN

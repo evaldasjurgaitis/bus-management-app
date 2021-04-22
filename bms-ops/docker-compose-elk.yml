@@ -1,0 +1,52 @@
+version: '3.4'
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.2
+    ports:
+      - 9200:9200
+      - 9300:9300
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: 'false'
+      ELASTIC_PASSWORD: changeme
+    networks:
+      - elk
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.9.2
+    ports:
+      - "5000:5000/tcp"
+      - "5000:5000/udp"
+      - "9600:9600"
+    command: logstash -f /etc/logstash/conf.d/logstash-tcp.conf
+    volumes:
+          - ./logstash-tcp.conf:/etc/logstash/conf.d/logstash-tcp.conf
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch
+    links:
+      - elasticsearch
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.9.2
+    ports:
+      - 5601:5601
+    environment:
+      elasticsearch.url: http://elasticsearch:9200
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch
+    links:
+      - elasticsearch
+
+networks:
+  elk:
+    driver: bridge
+
+volumes:
+  esdata:
+    driver: local

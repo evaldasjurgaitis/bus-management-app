@@ -1,7 +1,18 @@
 plugins {
-    id 'org.springframework.boot' version '2.2.5.RELEASE'
-    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
-    id 'java'
+	id 'org.springframework.boot' version '2.2.5.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+	id 'java'
+}
+
+repositories {
+	mavenCentral()
+	jcenter()
+	maven {
+		url "https://dl.bintray.com/eventuateio-oss/eventuate-maven-rc"
+	}
+	maven {
+		url "https://dl.bintray.com/eventuateio-oss/eventuate-maven-rc"
+	}
 }
 
 group = 'ej'
@@ -9,26 +20,36 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
 configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
-}
-
-repositories {
-    mavenCentral()
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    compileOnly 'org.projectlombok:lombok'
-    runtimeOnly 'org.postgresql:postgresql'
-    annotationProcessor 'org.projectlombok:lombok'
-    testImplementation('org.springframework.boot:spring-boot-starter-test') {
-        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-    }
+	compile "io.eventuate.client.java:eventuate-client-java-spring:$eventuateClientVersion"
+	compile "io.eventuate.local.java:eventuate-local-java-spring-jdbc:$eventuateLocalVersion"
+	compile "io.eventuate.local.java:eventuate-local-java-jdbc:$eventuateLocalVersion"
+
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	compile group: 'net.logstash.logback', name: 'logstash-logback-encoder', version: '6.4'
+	compile "io.reactivex:rxjava:1.1.5"
+	compile "org.apache.httpcomponents:httpclient:4.5"
+	compile "com.fasterxml.jackson.core:jackson-core:$jacksonVersion"
+	compile "com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion"
+	compile "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
+	compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.22'
+
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	implementation "org.springframework.boot:spring-boot-starter-actuator"
+
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
 }
 
 test {
-    useJUnitPlatform()
+	useJUnitPlatform()
 }

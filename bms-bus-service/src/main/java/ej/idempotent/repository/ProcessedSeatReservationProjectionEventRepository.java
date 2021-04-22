@@ -1,0 +1,7 @@
+package ej.idempotent.repository;
+
+import ej.idempotent.entity.ProcessedBusProjectionEvent;
+import ej.idempotent.entity.ProcessedSeatReservationProjectionEvent;
+
+public interface ProcessedSeatReservationProjectionEventRepository extends ProcessedEventRepository<ProcessedSeatReservationProjectionEvent> {
+}

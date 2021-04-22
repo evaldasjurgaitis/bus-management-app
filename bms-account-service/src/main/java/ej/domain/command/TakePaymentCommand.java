@@ -1,0 +1,17 @@
+package ej.domain.command;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class TakePaymentCommand implements AccountCommand {
+
+    private BigDecimal amountTotal;
+    private String orderAggregateId;
+
+}

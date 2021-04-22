@@ -1,0 +1,41 @@
+server:
+  port: 8083
+spring:
+  application:
+    name: bms-booking-service
+  bms-booking-service:
+    datasource:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:mysql://localhost:3306/bms_booking_service?&autoReconnect=true&failOverReadOnly=false&maxReconnects=10
+      username: root
+      password: rootpassword
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5Dialect
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    default-property-inclusion: non_null
+
+eventuatelocal:
+  kafka:
+    bootstrap:
+      servers: localhost:9092
+  zookeeper:
+    connection:
+      string: localhost:2181
+
+management:
+  endpoints:
+    health:
+      show-details: ALWAYS
+    web:
+      exposure:
+        include: "*"
+logging:
+  level:
+    org.springframework: INFO

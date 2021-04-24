@@ -18,13 +18,13 @@ import javax.sql.DataSource;
 @EnableJpaRepositories(
         basePackages = {
                 "ej.idempotent.repository",
-                "ej.domain.bus.projection.repository",
+                "ej.domain.route.repository",
                 "ej.domain.seatReservation.projection.repository"},
         entityManagerFactoryRef = "projectionEntityManagerFactory",
         transactionManagerRef = "projectionTransactionManager"
 )
 @EntityScan(basePackages = {
-        "ej.domain.bus.projection.entity",
+        "ej.domain.route.entity",
         "ej.domain.seatReservation.projection.entity",
         "ej.idempotent.entity"
 })
@@ -43,7 +43,7 @@ public class PersistenceBusServiceConfiguration {
         return builder
                 .dataSource(projectionDataSource)
                 .packages(
-                        "ej.domain.bus.projection.entity",
+                        "ej.domain.route.entity",
                         "ej.domain.seatReservation.projection.entity",
                         "ej.idempotent.entity"
                 )

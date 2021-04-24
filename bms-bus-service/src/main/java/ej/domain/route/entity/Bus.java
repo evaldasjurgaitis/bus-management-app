@@ -1,4 +1,4 @@
-package ej.domain.bus.projection.entity;
+package ej.domain.route.entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -6,28 +6,29 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import java.sql.Time;
+import java.util.List;
 import java.util.Map;
 
+@Entity
+@Table(name = "buses")
 @NoArgsConstructor
 @Data
-@Entity
-@Table(name = "bus_projection")
-public class BusProjection {
+public class Bus {
 
     @Id
-    @GeneratedValue
+    @Column(name = "id", insertable = false, updatable = false)
+    @NotNull
     private Long id;
 
     @Column(name = "name")
     private String name;
 
-    @Column(name = "seatsNumber")
-    private Long seatsNumber;
-
-    @ElementCollection
-    private Map<String, String> timetable;
+    @Column(name = "seatsNo")
+    private Long seatsNo;
 
 }

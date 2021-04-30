@@ -3,10 +3,12 @@ package ej.domain.aggregate;
 import ej.domain.command.AddBookingItemCommand;
 import ej.domain.command.BookingCommand;
 import ej.domain.command.CancelBookingCommand;
+import ej.domain.command.ConfirmBasketCommand;
 import ej.domain.command.ConfirmBookingCommand;
 import ej.domain.command.RejectBookingCommand;
 import ej.domain.command.RemoveBookingItemCommand;
 import ej.domain.command.UpdateBookingItemCommand;
+import ej.domain.event.booking.BasketConfirmedEvent;
 import ej.domain.event.booking.BookingCanceledEvent;
 import ej.domain.event.booking.BookingConfirmedEvent;
 import ej.domain.event.booking.BookingCreatedEvent;
@@ -82,6 +84,14 @@ public class Booking extends ReflectiveMutableCommandProcessingAggregate<Booking
         updateBookingItem(event.getBookingItemId(), new BookingItem(event.getBookingItemId(), event.getPassenger(), event.getTrip()));
     }
 
+    public List<Event> process(ConfirmBasketCommand cmd) {
+        return EventUtil.events(new BasketConfirmedEvent(cmd.getCustomerAggregateId(), cmd.getBookingAggregateId()));
+    }
+
+    public void apply(BasketConfirmedEvent event) {
+        noteBasketConfirmed();
+    }
+
     public List<Event> process(CancelBookingCommand cmd) {
         return EventUtil.events(new BookingCanceledEvent());
     }
@@ -131,6 +141,18 @@ public class Booking extends ReflectiveMutableCommandProcessingAggregate<Booking
 
     public void noteCreditReservationFailed() {
         this.state = BookingState.REJECTED;
+    }
+
+    public void noteCreditLimitExceeded() {
+        this.state = BookingState.CREDIT_LIMIT_EXCEEDED;
+    }
+
+    public void noteWaittingForPayment() {
+        this.state = BookingState.WAITTING_FOR_PAYMENT;
+    }
+
+    public void noteBasketConfirmed() {
+        this.state = BookingState.BASKET_CONFIRMED;
     }
 
     public void noteBookingCanceled() {

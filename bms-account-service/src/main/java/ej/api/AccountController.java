@@ -1,6 +1,7 @@
 package ej.api;
 
 import ej.api.request.AccountCreateRequest;
+import ej.api.request.AccountRefillCreditLimitRequest;
 import ej.api.request.AccountUpdateRequest;
 import ej.api.response.AccountResponse;
 import ej.domain.exception.ResourceNotFoundException;
@@ -37,9 +38,15 @@ public class AccountController {
                 .thenApply(e -> AccountResponse.fromDomain(e.getAggregate(), e.getEntityId()));
     }
 
-    @PutMapping
-    public CompletableFuture<AccountResponse> update(@RequestBody AccountUpdateRequest request) {
-        return accountService.updateAccount(request)
+    @PutMapping("/{aggregateId}")
+    public CompletableFuture<AccountResponse> update(@PathVariable String aggregateId, @RequestBody AccountUpdateRequest request) {
+        return accountService.updateAccount(aggregateId, request)
+                .thenApply(e -> AccountResponse.fromDomain(e.getAggregate(), e.getEntityId()));
+    }
+
+    @PostMapping("/{aggregateId}/refill-credit-limit")
+    public CompletableFuture<AccountResponse> refillCreditLimit(@PathVariable String aggregateId, @RequestBody AccountRefillCreditLimitRequest request) {
+        return accountService.refillCreditLimit(aggregateId, request)
                 .thenApply(e -> AccountResponse.fromDomain(e.getAggregate(), e.getEntityId()));
     }
 

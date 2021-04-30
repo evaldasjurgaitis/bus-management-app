@@ -27,12 +27,12 @@ public class SeatReservationProcessManager extends IdempotentEventHandler<Proces
     public void seatReserve(DispatchedEvent<BookingItemAddedEvent> ee) {
         handleEvent(ee, e -> {
             try {
-                BookingItemAddedEvent event = (BookingItemAddedEvent) e;
+                //BookingItemAddedEvent event = (BookingItemAddedEvent) e;
 
-                SeatReserveCommand cmd = new SeatReserveCommand();
-                cmd.setBookingItemId(event.getBookingItemId());
+                //SeatReserveCommand cmd = new SeatReserveCommand();
+                //cmd.setBookingItemId(event.getBookingItemId());
 
-                seatReservationService.createSeatReservation(null,cmd);
+                //seatReservationService.createSeatReservation(null,cmd);
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }

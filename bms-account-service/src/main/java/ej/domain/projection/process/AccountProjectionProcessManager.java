@@ -4,7 +4,9 @@ import ej.config.IdempotentEventHandler;
 import ej.config.TransactionExecutor;
 import ej.domain.event.account.AccountCreatedEvent;
 import ej.domain.event.account.AccountUpdatedEvent;
+import ej.domain.event.account.CreditLimitRefilledEvent;
 import ej.domain.projection.entity.AccountProjection;
+import ej.domain.projection.service.AccountProjectionQueryService;
 import ej.domain.projection.service.AccountProjectionService;
 import ej.idempotent.ProcessedEventService;
 import ej.idempotent.entity.ProcessedAccountProjectionEvent;
@@ -19,10 +21,12 @@ import java.time.ZonedDateTime;
 public class AccountProjectionProcessManager extends IdempotentEventHandler<ProcessedAccountProjectionEvent> {
 
     private final AccountProjectionService accountProjectionService;
+    private final AccountProjectionQueryService accountProjectionQueryService;
 
-    public AccountProjectionProcessManager(ProcessedEventService processedEventService, TransactionExecutor transactionExecutor, AccountProjectionService accountProjectionService) {
+    public AccountProjectionProcessManager(ProcessedEventService processedEventService, TransactionExecutor transactionExecutor, AccountProjectionService accountProjectionService, AccountProjectionQueryService accountProjectionQueryService) {
         super(processedEventService, ProcessedAccountProjectionEvent.class, transactionExecutor);
         this.accountProjectionService = accountProjectionService;
+        this.accountProjectionQueryService = accountProjectionQueryService;
     }
 
     @EventHandlerMethod
@@ -50,10 +54,24 @@ public class AccountProjectionProcessManager extends IdempotentEventHandler<Proc
         handleEvent(ee, e -> {
             try {
                 AccountUpdatedEvent event = (AccountUpdatedEvent) e;
-
                 AccountProjection accountProjection = new AccountProjection();
                 accountProjection.setAggregateId(ee.getEntityId());
                 accountProjection.setName(event.getName());
+
+                accountProjectionService.save(accountProjection);
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+    }
+
+    @EventHandlerMethod
+    public void refilledCreditLimit(DispatchedEvent<CreditLimitRefilledEvent> ee) {
+        handleEvent(ee, e -> {
+            try {
+                CreditLimitRefilledEvent event = (CreditLimitRefilledEvent) e;
+                AccountProjection accountProjection = accountProjectionQueryService.findById(event.getAccountAggregateId());
+                accountProjection.setCreditLimit(event.getAmount());
 
                 accountProjectionService.save(accountProjection);
             } catch (Exception ex) {

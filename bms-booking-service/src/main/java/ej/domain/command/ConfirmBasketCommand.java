@@ -5,11 +5,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class ValidateCreditLimitCommand implements AccountCommand {
+@AllArgsConstructor
+public class ConfirmBasketCommand implements BookingCommand {
 
-    private Boolean isValidCreditLimit;
     private String bookingAggregateId;
+    private String customerAggregateId;
 
 }

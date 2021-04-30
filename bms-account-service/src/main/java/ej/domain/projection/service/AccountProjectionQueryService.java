@@ -17,9 +17,12 @@ public class AccountProjectionQueryService {
     public AccountProjection findById(String aggregateId) {
         return accountProjectionRepository.findById(aggregateId).orElseThrow(ResourceNotFoundException::new);
     }
+    public AccountProjection findByCustomerAggregateId(String customerAggregateId) {
+        return accountProjectionRepository.findByCustomerAggregateId(customerAggregateId).orElseThrow(ResourceNotFoundException::new);
+    }
 
     public List<AccountProjection> findAll() {
-        return (List<AccountProjection>) accountProjectionRepository.findAll();
+        return accountProjectionRepository.findAll();
     }
 
 }

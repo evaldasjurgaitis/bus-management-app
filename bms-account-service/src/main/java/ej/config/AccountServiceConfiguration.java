@@ -66,12 +66,14 @@ public class AccountServiceConfiguration {
     public AccountProcessManager accountProcessManager(
             ProcessedEventService processedEventService,
             TransactionExecutor transactionExecutor,
-            AggregateRepository<Account, AccountCommand> accountAggregateRepository
+            AggregateRepository<Account, AccountCommand> accountAggregateRepository,
+            AccountProjectionQueryService accountProjectionQueryService
     ) {
         return new AccountProcessManager(
                 processedEventService,
                 transactionExecutor,
-                accountAggregateRepository
+                accountAggregateRepository,
+                accountProjectionQueryService
         );
     }
 
@@ -79,12 +81,14 @@ public class AccountServiceConfiguration {
     public AccountProjectionProcessManager accountProjectionProcessManager(
             ProcessedEventService processedEventService,
             TransactionExecutor transactionExecutor,
-            AccountProjectionService accountProjectionService
+            AccountProjectionService accountProjectionService,
+            AccountProjectionQueryService accountProjectionQueryService
     ) {
         return new AccountProjectionProcessManager(
                 processedEventService,
                 transactionExecutor,
-                accountProjectionService
+                accountProjectionService,
+                accountProjectionQueryService
         );
     }
 

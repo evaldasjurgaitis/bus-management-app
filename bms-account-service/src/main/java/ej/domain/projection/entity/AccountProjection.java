@@ -10,6 +10,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
+import java.util.Objects;
 
 @NoArgsConstructor
 @Data
@@ -37,5 +38,9 @@ public class AccountProjection {
     @Column(name = "time", nullable = false)
     @NotNull
     private ZonedDateTime time;
+
+    public boolean isValidCreditLimit(BigDecimal amountTotal) {
+        return Objects.nonNull(this.creditLimit) && Objects.nonNull(amountTotal) && this.creditLimit.equals(amountTotal) || this.creditLimit.compareTo(amountTotal) > 0;
+    }
 
 }

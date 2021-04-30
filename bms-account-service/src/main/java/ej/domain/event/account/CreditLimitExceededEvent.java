@@ -1,16 +1,14 @@
-package ej.domain.command;
+package ej.domain.event.account;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RefillCreditCommand {
+public class CreditLimitExceededEvent extends AccountEvent {
 
-    private BigDecimal creditAmount;
+    private String bookingAggregateId;
 
 }

@@ -3,17 +3,17 @@ package ej.domain.aggregate;
 import ej.domain.command.AccountCommand;
 import ej.domain.command.AccountCreateCommand;
 import ej.domain.command.AccountUpdateCommand;
-import ej.domain.command.RefillCreditCommand;
+import ej.domain.command.RefillCreditLimitCommand;
 import ej.domain.command.RefundPaymentCommand;
 import ej.domain.command.TakePaymentCommand;
 import ej.domain.command.ValidateCreditLimitCommand;
 import ej.domain.event.account.AccountCreatedEvent;
-import ej.domain.event.account.AccountCreditExceededEvent;
+import ej.domain.event.account.CreditLimitExceededEvent;
 import ej.domain.event.account.AccountUpdatedEvent;
-import ej.domain.event.account.RefilledCreditEvent;
+import ej.domain.event.account.CreditLimitRefilledEvent;
 import ej.domain.event.account.RefundedPaymentEvent;
 import ej.domain.event.account.TakenPaymentEvent;
-import ej.domain.event.account.ValidatedCreditLimitEvent;
+import ej.domain.event.account.CreditLimitValidatedEvent;
 import io.eventuate.Event;
 import io.eventuate.EventUtil;
 import io.eventuate.ReflectiveMutableCommandProcessingAggregate;
@@ -49,12 +49,12 @@ public class Account extends ReflectiveMutableCommandProcessingAggregate<Account
         this.name = event.getName();
     }
 
-    public List<Event> process(RefillCreditCommand cmd) {
-        return EventUtil.events(new RefilledCreditEvent(cmd.getCreditAmount()));
+    public List<Event> process(RefillCreditLimitCommand cmd) {
+        return EventUtil.events(new CreditLimitRefilledEvent(cmd.getAccountAggregateId(), cmd.getCreditAmount()));
     }
 
-    public void apply(RefilledCreditEvent event) {
-        this.creditLimit = this.creditLimit.add(event.getCreditAmount());
+    public void apply(CreditLimitRefilledEvent event) {
+        this.creditLimit = this.creditLimit.add(event.getAmount());
     }
 
     public List<Event> process(TakePaymentCommand cmd) {
@@ -74,18 +74,18 @@ public class Account extends ReflectiveMutableCommandProcessingAggregate<Account
     }
 
     public List<Event> process(ValidateCreditLimitCommand cmd) {
-        if (this.creditLimit.equals(cmd.getAmountTotal()) || this.creditLimit.compareTo(cmd.getAmountTotal()) > 0) {
-            return EventUtil.events(new ValidatedCreditLimitEvent());
+        if (cmd.getIsValidCreditLimit()) {
+            return EventUtil.events(new CreditLimitValidatedEvent(cmd.getBookingAggregateId()));
         } else {
-            return EventUtil.events(new AccountCreditExceededEvent(cmd.getOrderAggregateId()));
+            return EventUtil.events(new CreditLimitExceededEvent(cmd.getBookingAggregateId()));
         }
     }
 
-    public void apply(ValidatedCreditLimitEvent event) {
+    public void apply(CreditLimitValidatedEvent event) {
         // noop
     }
 
-    public void apply(AccountCreditExceededEvent event) {
+    public void apply(CreditLimitExceededEvent event) {
         // noop
     }
 

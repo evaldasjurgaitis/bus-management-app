@@ -59,10 +59,10 @@ public class BookingServiceConfiguration {
     }
 
 //    @Bean
-//    public BookingProcessManager customerProcessManager(
+//    public BookingProcessManager bookingProcessManager(
+//            AggregateRepository<Booking, BookingCommand> bookingAggregateRepository,
 //            ProcessedEventService processedEventService,
-//            TransactionExecutor transactionExecutor,
-//            AggregateRepository<Booking, BookingCommand> bookingAggregateRepository
+//            TransactionExecutor transactionExecutor
 //    ) {
 //        return new BookingProcessManager(
 //                processedEventService,

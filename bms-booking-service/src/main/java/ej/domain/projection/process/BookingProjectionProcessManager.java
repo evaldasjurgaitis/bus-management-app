@@ -2,6 +2,9 @@ package ej.domain.projection.process;
 
 import ej.config.IdempotentEventHandler;
 import ej.config.TransactionExecutor;
+import ej.domain.event.account.CreditLimitExceededEvent;
+import ej.domain.event.account.CreditLimitValidatedEvent;
+import ej.domain.event.booking.BasketConfirmedEvent;
 import ej.domain.event.booking.BookingCanceledEvent;
 import ej.domain.event.booking.BookingConfirmedEvent;
 import ej.domain.event.booking.BookingCreatedEvent;
@@ -113,10 +116,50 @@ public class BookingProjectionProcessManager extends IdempotentEventHandler<Proc
     }
 
     @EventHandlerMethod
+    public void confirmedBasket(DispatchedEvent<BasketConfirmedEvent> ee) {
+        handleEvent(ee, e -> {
+            try {
+                BookingProjection bookingProjection = bookingProjectionQueryService.findById(ee.getEntityId());
+                bookingProjectionService.save(bookingProjection);
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+    }
+
+    @EventHandlerMethod
     public void confirmedBooking(DispatchedEvent<BookingConfirmedEvent> ee) {
         handleEvent(ee, e -> {
             try {
                 BookingProjection bookingProjection = bookingProjectionQueryService.findById(ee.getEntityId());
+                bookingProjectionService.save(bookingProjection);
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+    }
+
+    @EventHandlerMethod
+    public void exceededCreditLimit(DispatchedEvent<CreditLimitExceededEvent> ee) {
+        handleEvent(ee, e -> {
+            try {
+                CreditLimitExceededEvent event = (CreditLimitExceededEvent) e;
+                BookingProjection bookingProjection = bookingProjectionQueryService.findById(event.getBookingAggregateId());
+                bookingProjection.setBookingState(BookingState.CREDIT_LIMIT_EXCEEDED);
+                bookingProjectionService.save(bookingProjection);
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+    }
+
+    @EventHandlerMethod
+    public void validatedCreditLimit(DispatchedEvent<CreditLimitValidatedEvent> ee) {
+        handleEvent(ee, e -> {
+            try {
+                CreditLimitValidatedEvent event = (CreditLimitValidatedEvent) e;
+                BookingProjection bookingProjection = bookingProjectionQueryService.findById(event.getBookingAggregateId());
+                bookingProjection.setBookingState(BookingState.WAITTING_FOR_PAYMENT);
                 bookingProjectionService.save(bookingProjection);
             } catch (Exception ex) {
                 throw new RuntimeException(ex);

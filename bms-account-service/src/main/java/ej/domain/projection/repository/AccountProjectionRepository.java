@@ -1,8 +1,12 @@
 package ej.domain.projection.repository;
 
 import ej.domain.projection.entity.AccountProjection;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface AccountProjectionRepository extends CrudRepository<AccountProjection, String> {
+import java.util.Optional;
+
+public interface AccountProjectionRepository extends JpaRepository<AccountProjection, String> {
+
+    Optional<AccountProjection> findByCustomerAggregateId(String customerAggregateId);
+
 }
